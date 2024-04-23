@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <main class="grow flex">
+    <aside class="w-64 border-r-2">Aside</aside>
+    <section class="flex flex-col grow">
+      <header class="flex border-b-2">
+        <nav class="flex items-center justify-center">
+          Header Title
+        </nav>
+      </header>
+      <RouterView />
+    </section>
+  </main>
+  <footer class="border-t-2 flex justify-center">
+    <p>This is new page by Bao Le</p>
+  </footer>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
 </template>
 
 <style scoped>
