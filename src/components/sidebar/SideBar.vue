@@ -14,7 +14,7 @@ import {
     <SidebarLogo/>
     <SidebarField :name="'Home'" :icon="faHouse" isCurrent page="home"/>
     <SidebarField :name="'Today'" :icon="faBolt" page="home"/>
-    <SidebarField :name="'Statistics'" :icon="faChartSimple" page="home"/>
+    <SidebarField :name="'Statistics'" :icon="faChartSimple" page="statistics"/>
     <SidebarField :name="'Manage Cards'" :icon="faBarsProgress" page="home"/>
     <SidebarField :name="'Settings'" :icon="faGear" page="home"/>
   </aside>
