@@ -1,5 +1,5 @@
 <template>
-<button class="border-2 flex items-center p-2 rounded-lg text-gray-800 text-xl">
+<button class="border-2 flex items-center p-2 rounded-lg text-gray-800 text-base">
   <FontAwesomeIcon v-if="icon" :icon="icon" class="mr-2" />
   <span class="font-base">{{ title }}</span>
 </button>
