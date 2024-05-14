@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SideBar from './components/sidebar/SideBar.vue'
+import SideBar from './components/sidebar/SideBar.vue';
 import HeaderView from './components/header/HeaderView.vue';
 import FooterView from './components/footer/FooterView.vue';
 import { RouterView } from 'vue-router'
@@ -8,7 +8,7 @@ import { RouterView } from 'vue-router'
 <template>
   <main class="grow flex">
     <SideBar/>
-    <section class="flex flex-col grow">
+      <section class="flex flex-col grow">
       <HeaderView/>
       <RouterView />
     </section>
@@ -16,5 +16,4 @@ import { RouterView } from 'vue-router'
   <FooterView/>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
