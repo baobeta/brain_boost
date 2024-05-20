@@ -6,7 +6,6 @@
 
 <script lang="ts" setup>
 import VueMultiselect from "vue-multiselect";
-import 'vue-multiselect/dist/vue-multiselect.css';
 import { ref, defineModel } from "vue";
 
 interface Option {
@@ -26,4 +25,4 @@ const props = withDefaults(defineProps<Props>(), {
 });
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
