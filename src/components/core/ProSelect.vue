@@ -26,4 +26,4 @@ const props = withDefaults(defineProps<Props>(), {
 });
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.css"></style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
