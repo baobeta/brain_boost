@@ -6,22 +6,23 @@
 
 <script lang="ts" setup>
 import VueMultiselect from "vue-multiselect";
+import 'vue-multiselect/dist/vue-multiselect.css';
 import { ref, defineModel } from "vue";
 
 interface Option {
-  label: label;
-  value: value;
+  label: string;
+  value: string;
 }
 
 interface Props {
-  options: Option[];
+  options: (Option | string)[];
 }
 
 const selected = defineModel();
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: "",
-  options: () => ["one", "two"],
+  modelValue: "All",
+  options: () => ["All", "one", "two"],
 });
 </script>
 

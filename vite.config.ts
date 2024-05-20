@@ -10,9 +10,11 @@ export default defineConfig({
     vue(),
     VueDevTools(),
   ],
+  base: "/Flashcard-system/",
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+    ,
   }
 })

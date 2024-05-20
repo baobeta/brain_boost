@@ -6,7 +6,6 @@ interface Props {
 const selected = defineModel();
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: "",
   options: () => ["one", "two", "tree"],
 });
 </script>
@@ -17,7 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
         href="#"
         class="px-4 py-2 rounded-lg border grow mx-2"
         @click="selected = option"
-        :class="{ active: selected === option }"
+        :class="{ 'bg-blue-500 text-white': 'one' === option }"
         >{{ option }}</a
       >
     </li>
