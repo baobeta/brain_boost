@@ -1,9 +1,7 @@
 <template>
-  <Transition name="modal">
-    <Modal :isOpen="!!componentModal" :title="title" @onClose="handleModalClose">
-      <component :is="componentModal" @onClose="closeModal" v-bind="props" />
-    </Modal>
-  </Transition>
+  <Modal :isOpen="!!componentModal" :title="title" @onClose="handleModalClose">
+    <component :is="componentModal" @onClose="closeModal" v-bind="props" />
+  </Modal>
 </template>
 
 <script lang="ts" setup>
