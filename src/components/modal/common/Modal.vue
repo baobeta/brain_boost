@@ -24,10 +24,11 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  isOpen: Boolean,
-  title: String
-});
+interface Props {
+  isOpen: boolean,
+  title: string | null;
+}
+defineProps<Props>();
 </script>
 
 <style scoped>

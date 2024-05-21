@@ -1,50 +1,47 @@
 <template>
-  <Modal :isOpen="!!component" :title="title" @onClose="handleModalClose">
-    <component :is="component" @onClose="handleClose" v-bind="props" />
-  </Modal>
+  <Transition name="modal">
+    <Modal :isOpen="!!componentModal" :title="title" @onClose="handleModalClose">
+      <component :is="componentModal" @onClose="closeModal" v-bind="props" />
+    </Modal>
+  </Transition>
 </template>
 
 <script lang="ts" setup>
-import { ModalBus } from '../eventBus';
+import { useEventListener } from '@vueuse/core';
+import Modal from './common/Modal.vue';
+import { useModalStore, useProvideModalStore } from './service/useModalStore';
 
-import Modal from './common/Modal';
+const {
+  componentModal,
+  title,
+  props,
+  closeOnClick,
+  closeModal
+} = useModalStore();
 
-import { onCreated } from 'vue';
-import {
-  useEventListener,
-  useEventBus,
-} from '@vueuse/core';
-import { modalKey } from '../modalKey';
-
-// https://github.com/DJanoskova/Vue.js-Modal-context/blob/master/src/components/ModalRoot.vue
-
-const component = ref<Component>(null);
-const title = ref<string>('');
-const props = ref<any>(null);
-const closeOnClick = ref<boolean>(true);
-
-const bus = useEventBus(fooKey);
-
-bus.on(({ component, title = '', props = null, closeOnClick = true }) => {
-  component.value = component;
-  title.value = title;
-  props.value = props;
-  closeOnClick.value = closeOnClick;
-});
-
-
-const handleModalClose = (force = false) => {
+function handleModalClose (force = false) {
   if (!closeOnClick.value && !force) return;
-  handleClose();
-};
+  closeModal();
+}
 
-const handleClose = () => {
-  component.value = null;
-};
-
-const handleKeyup = (e) => {
-  if (e.keyCode === 27) handleClose();
+const handleKeyup = (e: KeyboardEvent) => {
+  if (e.keyCode === 27) closeModal();
 };
 
 useEventListener('keyup', handleKeyup);
 </script>
+<style>
+.slide-modal-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-modal-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-modal-enter-from,
+.slide-modal-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+</style>
