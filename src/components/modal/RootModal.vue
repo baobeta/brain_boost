@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import { useEventListener } from '@vueuse/core';
 import Modal from './common/Modal.vue';
-import { useModalStore, useProvideModalStore } from './service/useModalStore';
+import { useModalStore } from './service/useModalStore';
 
 const {
   componentModal,
