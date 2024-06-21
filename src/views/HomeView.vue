@@ -4,6 +4,7 @@ import ListDeck from "@/components/homeview/ListDeck.vue";
 import { useModalStore } from "@/components/modal/service/useModalStore";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import AddDesk from "@/components/homeview/AddDesk.vue";
+import FriendAdder from "./FriendAdder.vue"
 
 const { openModal } = useModalStore();
 
@@ -20,6 +21,7 @@ function openCreateDeskModal () {
 <template>
   <section class="home flex flex-col items-center">
     <div class="flex flex-col w-3/4 mt-2">
+      <FriendAdder :defaultAge="21"/>
       <div class="flex justify-end">
         <ButtonIcon :title="'New Deck'" :icon="faPlus"  @click="openCreateDeskModal"/>
       </div>
