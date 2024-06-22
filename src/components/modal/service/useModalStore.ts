@@ -1,4 +1,3 @@
-// useCounterStore.ts
 import { computed, ref, type Component } from 'vue';
 import { createInjectionState } from '@vueuse/core';
 

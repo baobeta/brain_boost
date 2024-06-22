@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { db } from '../db';
+import { db } from '../models/db';
 
 export default {
   name: 'FriendAdder',
