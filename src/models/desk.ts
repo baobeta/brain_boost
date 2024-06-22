@@ -4,11 +4,12 @@ import { db } from './db';
 export interface IDeskSkeleton {
   name: string;
   description?: string;
-  superDesk?: string;
+
 }
 
 export interface IDesk extends IDeskSkeleton {
   id: string;
+  superDesk?: string;
   subDesks: string[];
 }
 
@@ -36,24 +37,53 @@ class Desk {
     };
   }
 
-  static async create (newDesk: IDeskSkeleton): Promise<IDesk> {
-    const desk = new Desk();
-    desk.name = newDesk.name;
-    desk.description = newDesk.description;
-    desk.superDesk = newDesk.superDesk;
+  static toModel (desk: IDesk): Desk {
+    const newDesk = new Desk();
+    newDesk.id = desk.id;
+    newDesk.name = desk.name;
+    newDesk.description = desk.description;
+    newDesk.superDesk = desk.superDesk;
+    newDesk.subDesks = desk.subDesks;
+    return newDesk;
+  }
 
-    // Add desk to database
+  static toObject (desk: Desk): IDesk {
+    return {
+      id: desk.id,
+      name: desk.name,
+      description: desk.description,
+      superDesk: desk.superDesk,
+      subDesks: desk.subDesks
+    };
+  }
+
+  static async create (newDesk: Desk): Promise<IDesk> {
     try {
-      await db.desks.add(desk, desk.id);
+      await db.desks.add(newDesk, newDesk.id);
     } catch (error) {
       console.error("Error adding desk to database", error);
     } finally {
-      return desk.toObject();
+      return newDesk;
+    }
+  }
+
+  static async updateDesk (desk: Desk): Promise<void> {
+    try {
+      await db.desks.update(desk.id, {
+        name: desk.name,
+        description: desk.description
+      });
+    } catch (error) {
+      console.error("Error updating desk in database", error);
     }
   }
 
   static async deleteDesk (id: string): Promise<void> {
-    await db.desks.delete(id);
+    try {
+      await db.desks.delete(id);
+    } catch (error) {
+      console.error("Error deleting desk in database", error);
+    }
   }
 }
 

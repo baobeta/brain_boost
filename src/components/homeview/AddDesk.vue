@@ -1,19 +1,38 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useDesk } from '@/service/useDesk';
 import Desk from '@/models/desk';
 
-const name = ref('');
-const description = ref('');
+interface Props {
+  desk: Desk;
+}
+
+const props = defineProps<Props>();
+
+const name = ref<string>(props.desk.name || '');
+const description = ref(props.desk.description || '');
+
+const {
+  addDesk,
+  updateDesk
+} = useDesk()
 
 const emit = defineEmits(['onClose']);
 
-const createDesk = async () => {
-  const desk = await Desk.create({
-    name: name.value,
-    description: description.value
-  });
+const handleAction = async () => {
+  const desk = new Desk();
+  desk.name = name.value;
+  desk.description = description.value;
+
+  if (props.desk.id) {
+    desk.id = props.desk.id;
+    await updateDesk(desk);
+  } else {
+    await addDesk(desk);
+  }
   emit('onClose');
 };
+
 </script>
 
 
@@ -32,8 +51,8 @@ const createDesk = async () => {
       <input v-model="description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline">
     </div>
     <div class="flex items-center justify-end">
-      <button class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" @click="createDesk">
-        Create
+      <button class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" @click="handleAction">
+        {{ desk.id ? 'Update' : 'Add' }}
       </button>
     </div>
 </div>
