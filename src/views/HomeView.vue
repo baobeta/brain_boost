@@ -29,7 +29,10 @@ function openCreateDeskModal () {
       <div class="flex justify-end">
         <ButtonIcon :title="'New Deck'" :icon="faPlus"  @click="openCreateDeskModal"/>
       </div>
-      <ListDeck v-for="desk in desks" :title="desk.name" />
+      <VTooltip v-for="desk in desks" :key="desk.id">
+        <ListDeck  :title="desk.name" />
+        <template #popper>{{ desk.description }}</template>
+      </VTooltip>
     </div>
   </section>
 </template>
