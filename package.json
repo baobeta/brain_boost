@@ -6,7 +6,6 @@
   "author": "baobeta <lequocbao29072001@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "prune": "^0.0.2",
     "turbo": "^2.2.0"
   }
 }
