@@ -11,15 +11,15 @@ useProvideModalStore();
 </script>
 
 <template>
-  <RootModal/>
+  <RootModal />
   <main class="grow flex">
-    <SideBar/>
-      <section class="flex flex-col grow">
-      <HeaderView/>
+    <SideBar />
+    <section class="flex flex-col grow">
+      <HeaderView />
       <RouterView />
     </section>
   </main>
-  <FooterView/>
+  <FooterView />
 </template>
 
 <style scoped></style>

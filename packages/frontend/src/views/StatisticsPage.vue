@@ -3,7 +3,6 @@ import ProSelect from "../components/core/ProSelect.vue";
 import PillsTab from "../components/core/PillsTab.vue";
 import BarChart from "../components/core/BarChart.vue";
 import { useModalStore } from "@/components/modal/service/useModalStore";
-import { onMounted } from "vue";
 
 const { openModal } = useModalStore();
 
