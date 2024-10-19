@@ -5,6 +5,15 @@
   "repository": "https://github.com/baolequoc/Flashcard-system.git",
   "author": "baobeta <lequocbao29072001@gmail.com>",
   "license": "MIT",
+  "packageManager": "^yarn@1.22.19",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build"
+  },
   "dependencies": {
     "turbo": "^2.2.0"
   }

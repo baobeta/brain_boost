@@ -53,6 +53,7 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+.turbo/*
 
 *.tsbuildinfo
 
@@ -88,3 +89,4 @@ coverage
 *.tsbuildinfo
 
 
+.turbo/cookies/1.cookie
