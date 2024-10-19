@@ -18,7 +18,12 @@ function testModal () {
 <template>
   <section class="flex flex-col items-center mt-2">
     <div class="w-3/4">
-      <button class="bg-red" @click="testModal">test modal</button>
+      <button
+        class="bg-red"
+        @click="testModal"
+      >
+        test modal
+      </button>
       <section>
         <span class="text-slate-500 text-sm">Showing Statistics of</span>
         <ProSelect />

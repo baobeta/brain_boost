@@ -18,11 +18,20 @@ const {
   <section class="home flex flex-col items-center">
     <div class="flex flex-col w-3/4 mt-2">
       <div class="flex justify-end">
-        <ButtonIcon :title="'New Deck'" :icon="faPlus"  @click="useDeskModal"/>
+        <ButtonIcon
+          :title="'New Deck'"
+          :icon="faPlus"
+          @click="useDeskModal"
+        />
       </div>
-      <VTooltip v-for="desk in listDesks" :key="desk.id">
+      <VTooltip
+        v-for="desk in listDesks"
+        :key="desk.id"
+      >
         <ListDeck :desk="desk" />
-        <template #popper>{{ desk.description }}</template>
+        <template #popper>
+          {{ desk.description }}
+        </template>
       </VTooltip>
     </div>
   </section>

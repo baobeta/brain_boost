@@ -5,6 +5,7 @@
   "repository": "https://github.com/baolequoc/Flashcard-system.git",
   "author": "baobeta <lequocbao29072001@gmail.com>",
   "license": "MIT",
+  "private": true,
   "packageManager": "^yarn@1.22.19",
   "workspaces": [
     "apps/*",
