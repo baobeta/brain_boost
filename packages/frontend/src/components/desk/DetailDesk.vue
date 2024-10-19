@@ -2,5 +2,8 @@
 
 </script>
 <template>
-  <div>{{ $route.params.id }}</div>
+  <div>
+    <PButton label="save" />
+    <div>{{ $route.params.id }}</div>
+  </div>
 </template>

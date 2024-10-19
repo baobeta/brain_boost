@@ -29,14 +29,20 @@ const dropdownOption = [
   <div class="flex bg-gray-100 text-gray-800 items-center py-2 px-4 rounded max-w-2xl text-xl justify-between mt-2 hover:bg-gray-300">
     <span class="font-base">{{ desk.name }}</span>
     <VDropdown>
-      <vue-feather type="more-horizontal" class="w-6 h-6" />
+      <vue-feather 
+        type="
+      more-horizontal"
+        class="w-6 h-6"
+      />
       <template #popper>
         <div class="flex flex-col p-2">
-            <button v-for="option in dropdownOption"
-              @click="option.action"
-              class="flex font-base p-2 w-full hover:bg-slate-100 rounded justify-center">
-              <span :class="option.class">{{ option.title }}</span>
-            </button>
+          <button
+            v-for="option in dropdownOption"
+            class="flex font-base p-2 w-full hover:bg-slate-100 rounded justify-center"
+            @click="option.action"
+          >
+            <span :class="option.class">{{ option.title }}</span>
+          </button>
         </div>
       </template>
     </VDropdown>

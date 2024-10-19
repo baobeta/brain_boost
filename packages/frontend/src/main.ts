@@ -4,19 +4,29 @@ import 'floating-vue/dist/style.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import FloatingVue from 'floating-vue'
-import VueFeather from 'vue-feather';
+// import VueFeather from 'vue-feather';
 
 import App from './App.vue'
 import router from './router'
+import PrimeVue from 'primevue/config';
+import Aura from '@primevue/themes/aura';
+import { setComponentPrefix } from './config/prime_prefix'
 
 
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(FloatingVue)
-app.use(createPinia())
+app.use(FloatingVue )
+app.use(createPinia());
 app.use(router);
+app.use(PrimeVue, {
+  theme: {
+    preset: Aura
+  }
+});
 
-app.component(VueFeather.name || 'vue-feather', VueFeather);
+setComponentPrefix(app)
+
+// app.component(VueFeather.name || 'vue-feather', VueFeather);
 
 app.mount('#app')
