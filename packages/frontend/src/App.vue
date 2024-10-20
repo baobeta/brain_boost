@@ -8,6 +8,7 @@ import { RouterView } from 'vue-router'
 import { useProvideModalStore } from './components/modal/service/useModalStore';
 
 useProvideModalStore();
+console.log('App');
 </script>
 
 <template>
