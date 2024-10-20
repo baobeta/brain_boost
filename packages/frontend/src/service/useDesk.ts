@@ -26,7 +26,6 @@ export function useDesk() {
   }
 
   async function getDesk(id: string) {
-    console.log('🚀 ~ getDesk ~ id:', id);
     return await Desk.getDesk(id);
   }
 

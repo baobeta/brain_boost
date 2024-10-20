@@ -1,4 +1,4 @@
-import { type Card as Model, createEmptyCard, type ReviewLog } from "ts-fsrs";
+import { type Card as Model, type ReviewLog } from 'ts-fsrs';
 
 export interface ICard {
   id: string;

@@ -19,6 +19,14 @@ const router = createRouter({
       path: '/desks/:id',
       name: 'desk',
       component: DetailDesk,
+      children: [
+        // when the route is /desks/id/new match
+        {
+          path: 'new',
+          name: 'cards',
+          component: DetailDesk,
+        },
+      ],
     },
     {
       path: '/statistics',
