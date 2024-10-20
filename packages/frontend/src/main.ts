@@ -1,5 +1,6 @@
 import './index.css';
 import 'floating-vue/dist/style.css';
+import 'primeicons/primeicons.css';
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';

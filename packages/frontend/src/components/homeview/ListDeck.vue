@@ -27,9 +27,9 @@ const dropdownOption = [
   <div
     class="flex bg-gray-100 text-gray-800 items-center py-2 px-4 rounded max-w-2xl text-xl justify-between mt-2 hover:bg-gray-300"
   >
+    <span class="pi pi-chevron-right"></span>
     <span class="font-base">{{ desk.name }}</span>
     <VDropdown>
-      <vue-feather type=" more-horizontal" class="w-6 h-6" />
       <template #popper>
         <div class="flex flex-col p-2">
           <button
