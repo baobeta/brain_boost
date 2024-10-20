@@ -23,13 +23,13 @@ watch(
 </script>
 <template>
   <div v-if="deskData">
-    <div class="flex justify-between">
-      <div>{{ deskData.name }}</div>
-      <PButton label="Add Cards" outlined severity="contrast" icon="pi pi-plus" />
-    </div>
     <div>
       <div class="max-w-4xl mx-auto p-6 flex flex-col">
-        <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="flex justify-between">
+          <div class="font-semibold text-xl">{{ deskData.name }}</div>
+          <PButton label="Add Cards" outlined severity="contrast" icon="pi pi-plus" />
+        </div>
+        <div class="grid grid-cols-3 gap-4 mb-6 mt-2">
           <SummaryCard icon="sparkles" title="New" :total="0" :color="'purple'" />
           <SummaryCard icon="arrow-circle-right" title="Learning" :total="0" color="yellow" />
           <SummaryCard icon="book" title="Review" :total="0" color="blue" />
@@ -51,14 +51,9 @@ watch(
             <PButton icon="pi pi-ellipsis-v" outlined severity="contrast" />
           </div>
         </div>
-        <div class="flex flex-col">
-          <CardElement front="Front" back="Back" :is-show-back="true" />
-          <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-4" data-v0-t="card">
-            <div class="text-lg">ád</div>
-          </div>
-          <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-4" data-v0-t="card">
-            <div class="text-lg">áda</div>
-          </div>
+        <div class="flex flex-col space-y-2">
+          <CardElement id="test" front="Front" back="Back" :is-show-back="true" />
+          <CardElement id="test" front="Front" back="Back" :is-show-back="false" />
         </div>
       </div>
     </div>
