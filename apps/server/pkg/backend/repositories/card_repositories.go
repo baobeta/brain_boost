@@ -24,3 +24,12 @@ func (r *CardRepository) AddCard(card *models.Card) error {
 func (r *CardRepository) UpdateCard(card *models.Card) error {
     return r.DB.Save(card).Error
 }
+
+func (r *CardRepository) GetCardByID(cardID uint) (*models.Card, error) {
+    var card models.Card
+    err := r.DB.First(&card, cardID).Error
+    if err != nil {
+        return nil, err
+    }
+    return &card, nil
+}
