@@ -23,11 +23,6 @@ app.use(PrimeVue, {
     preset: Aura,
     options: {
       darkModeSelector: '.fake-dark-mode-selector',
-      cssLayer: {
-        prefix: 'p',
-        name: 'primeui',
-        order: 'tailwind-base, primeui, primevue, tailwind-utilities;',
-      },
     },
   },
 });

@@ -11,15 +11,17 @@ console.log('App');
 </script>
 
 <template>
-  <RootModal />
-  <main class="grow flex">
-    <SideBar />
-    <section class="flex flex-col grow">
-      <HeaderView />
-      <RouterView />
-    </section>
-  </main>
-  <FooterView />
+  <div class="size-full flex flex-col">
+    <RootModal />
+    <main class="grow flex">
+      <SideBar />
+      <section class="flex flex-col grow">
+        <HeaderView />
+        <RouterView />
+      </section>
+    </main>
+    <FooterView />
+  </div>
 </template>
 
 <style scoped></style>
