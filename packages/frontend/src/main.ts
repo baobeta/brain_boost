@@ -1,10 +1,10 @@
+import 'primeicons/primeicons.css';
 import './index.css';
 import 'floating-vue/dist/style.css';
-import 'primeicons/primeicons.css';
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import FloatingVue from 'floating-vue';
+import FloatingVue, { options } from 'floating-vue';
 // import VueFeather from 'vue-feather';
 
 import App from './App.vue';
@@ -21,6 +21,14 @@ app.use(router);
 app.use(PrimeVue, {
   theme: {
     preset: Aura,
+    options: {
+      darkModeSelector: '.fake-dark-mode-selector',
+      cssLayer: {
+        prefix: 'p',
+        name: 'primeui',
+        order: 'tailwind-base, primeui, primevue, tailwind-utilities;',
+      },
+    },
   },
 });
 
