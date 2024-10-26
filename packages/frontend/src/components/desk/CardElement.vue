@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import PreviewCard from '../card/PreviewCard.vue';
 
 const props = defineProps<{
   id: string;
@@ -44,11 +45,15 @@ const dropdownOption = computed(() => [
 <template>
   <div class="rounded-lg border shadow-sm p-2 flex flex-col">
     <div class="flex justify-between items-center">
-      <div class="preview ql-editor" v-html="props.front"></div>
+      <div class="preview ql-editor">
+        <PreviewCard :model-value="props.front" />
+      </div>
       <div><Dropdown :options="dropdownOption" icon="ellipsis-v" /></div>
     </div>
     <div v-if="isShowBack" class="mt-2 pt-2 border-t">
-      <div class="preview ql-editor" v-html="props.back"></div>
+      <div class="preview ql-editor">
+        <PreviewCard :model-value="props.back" />
+      </div>
     </div>
   </div>
 </template>

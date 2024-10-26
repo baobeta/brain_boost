@@ -15,8 +15,14 @@
       <EditorLabel v-model="back" label="Back" />
     </div>
     <div class="flex justify-between">
-      <PButton label="Back to desk" severity="secondary" class="mt-4" icon="pi pi-arrow-left" @click="$router.go(-1)" />
-      <PButton label="Add Card" severity="primary" class="mt-4" icon="pi pi-plus" @click="addCard" />
+      <PButton label="Back to desk" severity="secondary" class="mt-4" icon="pi pi-arrow-left" @click="backToDesk" />
+      <PButton
+        :label="cardId ? 'Update Card' : 'Add New Card'"
+        severity="primary"
+        class="mt-4"
+        icon="pi pi-plus"
+        @click="addCard"
+      />
     </div>
   </div>
 </template>
@@ -28,19 +34,27 @@ import { ref } from 'vue';
 import { useDesk } from '@/service/useDesk';
 import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useCard } from '@/service/useCard';
 
 const deskId = ref('');
 const { listDesks } = useDesk();
 const route = useRoute();
-const { saveNewCard } = useCard();
+const router = useRouter();
+const { saveNewCard, fetchCard, updateCard } = useCard();
 
 const options = computed(() => listDesks.value.map((desk) => ({ key: desk.id, label: desk.name })));
 const front = ref('');
 const back = ref('');
+const cardId = computed(() => route.params.cardId as string);
 
-onMounted(() => {
-  deskId.value = String(route.params.deskId) || options.value[0].key;
+onMounted(async () => {
+  const card = await fetchCard(cardId.value);
+  if (card) {
+    front.value = card.front;
+    back.value = card.back;
+  }
+  deskId.value = card?.deckId || String(route.params.deskId) || options.value[0].key;
 });
 
 const clearData = () => {
@@ -48,7 +62,17 @@ const clearData = () => {
   back.value = '';
 };
 
+async function backToDesk() {
+  clearData();
+  router.push({ name: 'desk', params: { id: deskId.value } });
+}
+
 async function addCard() {
+  if (cardId.value) {
+    await updateCard(front.value, back.value, cardId.value);
+    backToDesk();
+    return;
+  }
   await saveNewCard(front.value, back.value, deskId.value);
   clearData();
 }

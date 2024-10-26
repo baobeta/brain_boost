@@ -23,7 +23,12 @@ const router = createRouter({
     },
     {
       path: '/card/new/:deskId',
-      name: 'new-card',
+      name: 'new_card',
+      component: NewCard,
+    },
+    {
+      path: '/card/edit/:cardId',
+      name: 'edit_card',
       component: NewCard,
     },
     {

@@ -2,12 +2,16 @@
 import Desk from '@/models/desk';
 import { useDesk } from '@/service/useDesk';
 import { useCard } from '@/service/useCard';
-import { ref, watch, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import SummaryCard from './SummaryCard.vue';
 import CardElement from './CardElement.vue';
 import type { ICard } from '@/models/card';
+import { useToast } from 'primevue/usetoast';
+
 const route = useRoute();
+const router = useRouter();
+const toast = useToast();
 const deskData = ref<Desk | null>(null);
 
 const { getDesk } = useDesk();
@@ -35,6 +39,22 @@ async function handleDeleteCard(id: string) {
   await deleteCard(id);
   refreshCards();
 }
+
+async function handleAddCard() {
+  if (!deskData?.value?.id) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Desk not found', life: 3000 });
+    return;
+  }
+  router.push({ name: 'new_card', params: { deskId: deskData.value.id } });
+}
+
+async function handleEditCard(id: string) {
+  if (!deskData?.value?.id) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Desk not found', life: 3000 });
+    return;
+  }
+  router.push({ name: 'edit_card', params: { cardId: id } });
+}
 </script>
 <template>
   <div v-if="deskData">
@@ -42,7 +62,7 @@ async function handleDeleteCard(id: string) {
       <div class="max-w-4xl mx-auto p-6 flex flex-col">
         <div class="flex justify-between">
           <div class="font-semibold text-xl">{{ deskData.name }}</div>
-          <PButton label="Add Cards" outlined severity="contrast" icon="pi pi-plus" />
+          <PButton label="Add Cards" outlined severity="contrast" icon="pi pi-plus" @click="handleAddCard" />
         </div>
         <div class="grid grid-cols-3 gap-4 mb-6 mt-2">
           <SummaryCard icon="sparkles" title="New" :total="0" :color="'purple'" />
@@ -73,8 +93,9 @@ async function handleDeleteCard(id: string) {
             :key="card.id"
             :front="card.front"
             :back="card.back"
-            :is-show-back="true"
+            :is-show-back="false"
             @delete="handleDeleteCard(card.id)"
+            @edit="handleEditCard(card.id)"
           />
         </div>
       </div>

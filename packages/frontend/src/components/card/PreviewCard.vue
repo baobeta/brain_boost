@@ -1,13 +1,24 @@
 <template>
-  <div ref="editor" class="flex flex-col">
-    <div class="flex font-semibold">{{ label }}</div>
-    <Editor v-model="value" editor-style="height: 320px" @load="onLoad" @update:model-value="onChange" />
-  </div>
+  <Editor
+    v-model="value"
+    class="preview-data"
+    :editor-options="editorOptions"
+    readonly
+    editor-style="border: none;"
+    @load="onLoad"
+    @update:model-value="onChange"
+  >
+    <template #toolbar> </template>
+  </Editor>
 </template>
 <script setup lang="ts">
 import Editor, { type EditorLoadEvent } from 'primevue/editor';
-import { onMounted, nextTick, ref, watch } from 'vue';
-defineProps<{ label: string }>();
+import { onMounted, nextTick, ref } from 'vue';
+const editorOptions = {
+  modules: {
+    toolbar: false,
+  },
+};
 const value = defineModel<string>();
 const editor = ref();
 
@@ -38,7 +49,11 @@ const onLoad = ({ instance }: EditorLoadEvent) => {
     }
   }
 };
-const onChange = (v: string) => {
-  value.value = v;
-};
 </script>
+<style>
+.preview-data {
+  .p-editor-toolbar {
+    display: none;
+  }
+}
+</style>

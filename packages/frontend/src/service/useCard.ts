@@ -1,4 +1,4 @@
-import { createNewCard, deleteCardById, getAllCards, getCardsByDeckId, save } from '@/models/card';
+import { createNewCard, deleteCardById, getAllCards, getCard, getCardsByDeckId, save, update } from '@/models/card';
 import { useToast } from 'primevue/usetoast';
 
 export function useCard() {
@@ -14,6 +14,11 @@ export function useCard() {
     return cards;
   }
 
+  async function fetchCard(id: string) {
+    const card = await getCard(id);
+    return card;
+  }
+
   async function saveNewCard(front: string, back: string, deckId: string) {
     const card = createNewCard(front, back, deckId);
     await save(card);
@@ -24,9 +29,21 @@ export function useCard() {
     await deleteCardById(id);
     toast.add({ severity: 'success', summary: 'Success', detail: 'Card is deleted successfully', life: 3000 });
   }
+
+  async function updateCard(front: string, back: string, id: string) {
+    const card = await getCard(id);
+    if (card) {
+      card.front = front;
+      card.back = back;
+      await update(card);
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Card is updated successfully', life: 3000 });
+    }
+  }
   return {
     saveNewCard,
     fetchCards,
     deleteCard,
+    fetchCard,
+    updateCard,
   };
 }
