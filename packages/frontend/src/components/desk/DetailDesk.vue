@@ -1,14 +1,23 @@
 <script setup lang="ts">
 import Desk from '@/models/desk';
 import { useDesk } from '@/service/useDesk';
-import { ref, watch } from 'vue';
+import { useCard } from '@/service/useCard';
+import { ref, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import SummaryCard from './SummaryCard.vue';
 import CardElement from './CardElement.vue';
+import type { ICard } from '@/models/card';
 const route = useRoute();
 const deskData = ref<Desk | null>(null);
 
 const { getDesk } = useDesk();
+const { fetchCards, deleteCard } = useCard();
+const listCards = ref<ICard[]>([]);
+
+async function refreshCards() {
+  if (!deskData.value) return;
+  listCards.value = await fetchCards(deskData.value.id);
+}
 
 // fetch the data when params change
 watch(
@@ -17,9 +26,15 @@ watch(
     if (!newId) return;
     if (typeof newId !== 'string') return;
     deskData.value = await getDesk(newId);
+    refreshCards();
   },
   { immediate: true },
 );
+
+async function handleDeleteCard(id: string) {
+  await deleteCard(id);
+  refreshCards();
+}
 </script>
 <template>
   <div v-if="deskData">
@@ -52,8 +67,15 @@ watch(
           </div>
         </div>
         <div class="flex flex-col space-y-2">
-          <CardElement id="test" front="Front" back="Back" :is-show-back="true" />
-          <CardElement id="test" front="Front" back="Back" :is-show-back="false" />
+          <CardElement
+            v-for="card in listCards"
+            id="test"
+            :key="card.id"
+            :front="card.front"
+            :back="card.back"
+            :is-show-back="true"
+            @delete="handleDeleteCard(card.id)"
+          />
         </div>
       </div>
     </div>

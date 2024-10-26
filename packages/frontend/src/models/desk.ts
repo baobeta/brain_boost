@@ -87,7 +87,6 @@ class Desk {
   static async getDesk(id: string): Promise<Desk> {
     try {
       const desk = await db.desks.get(id);
-      console.log('🚀 ~ Desk ~ getDesk ~ db.desks:', db.desks);
       if (!desk) return null;
       return Desk.toModel(desk);
     } catch (error) {

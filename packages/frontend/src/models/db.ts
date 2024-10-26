@@ -6,13 +6,17 @@ export class Database extends Dexie {
   desks!: Dexie.Table<IDesk, string>;
   cards!: Dexie.Table<ICard, string>;
 
-  constructor () {
+  constructor() {
     // create flashcard_database
     super('flashcard_database');
     // add tables
     this.version(1).stores({
       desks: 'id',
-      cards: 'id, front'
+      cards: 'id, front',
+    });
+    this.version(2).stores({
+      desks: 'id',
+      cards: 'id, front, deckId',
     });
     // open db
     this.open();

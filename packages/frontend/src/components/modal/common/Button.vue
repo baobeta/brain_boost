@@ -7,11 +7,14 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-const props = withDefaults(defineProps<{
-  color: string;
-}>(), {
-  color: 'teal'
-});
+const props = withDefaults(
+  defineProps<{
+    color: string;
+  }>(),
+  {
+    color: 'teal',
+  },
+);
 
 const classes = computed(() => {
   const { color } = props;

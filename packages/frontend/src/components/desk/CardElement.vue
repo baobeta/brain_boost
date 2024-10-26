@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps<{
   id: string;
@@ -8,13 +8,16 @@ const props = defineProps<{
   isShowBack: boolean;
 }>();
 
-const dropdownOption = ref([
+const emit = defineEmits(['delete', 'edit']);
+const isShowBack = ref(props.isShowBack);
+
+const dropdownOption = computed(() => [
   {
     key: `edit-${props.id}`,
     label: 'Edit',
     icon: 'pi pi-pencil',
     command: () => {
-      console.log('edit');
+      emit('edit', props.id);
     },
   },
   {
@@ -22,7 +25,16 @@ const dropdownOption = ref([
     label: 'Delete',
     icon: 'pi pi-trash',
     command: () => {
-      console.log('trash');
+      emit('delete', props.id);
+    },
+    class: '*:!text-red-500',
+  },
+  {
+    key: `show-back-${props.id}`,
+    label: isShowBack.value ? 'Hide Back' : 'Show Back',
+    icon: isShowBack.value ? 'pi pi-eye-slash' : 'pi pi-eye',
+    command: () => {
+      isShowBack.value = !isShowBack.value;
     },
     class: '*:!text-red-500',
   },
@@ -32,9 +44,11 @@ const dropdownOption = ref([
 <template>
   <div class="rounded-lg border shadow-sm p-2 flex flex-col">
     <div class="flex justify-between items-center">
-      <div class="text-lg">{{ props.front }}</div>
+      <div class="preview ql-editor" v-html="props.front"></div>
       <div><Dropdown :options="dropdownOption" icon="ellipsis-v" /></div>
     </div>
-    <div v-if="props.isShowBack" class="mt-2 pt-2 border-t">{{ props.back }}</div>
+    <div v-if="isShowBack" class="mt-2 pt-2 border-t">
+      <div class="preview ql-editor" v-html="props.back"></div>
+    </div>
   </div>
 </template>

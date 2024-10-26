@@ -5,6 +5,7 @@ import FooterView from './components/footer/FooterView.vue';
 import RootModal from './components/modal/RootModal.vue';
 import { RouterView } from 'vue-router';
 import { useProvideModalStore } from './components/modal/service/useModalStore';
+import Toast from 'primevue/toast';
 
 useProvideModalStore();
 console.log('App');
@@ -12,6 +13,7 @@ console.log('App');
 
 <template>
   <div class="size-full flex flex-col">
+    <Toast />
     <RootModal />
     <main class="grow flex">
       <SideBar />
