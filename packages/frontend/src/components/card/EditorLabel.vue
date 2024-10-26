@@ -6,7 +6,7 @@
 </template>
 <script setup lang="ts">
 import Editor, { type EditorLoadEvent } from 'primevue/editor';
-import { onMounted, nextTick, ref, watch } from 'vue';
+import { onMounted, nextTick, ref } from 'vue';
 defineProps<{ label: string }>();
 const value = defineModel<string>();
 const editor = ref();
