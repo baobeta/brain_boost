@@ -77,7 +77,6 @@ export async function getAllCards(): Promise<ICard[]> {
   try {
     console.log('getAllCards');
     const cards = await db.cards.toArray();
-    console.log('🚀 ~ getAllCards ~ cards:', cards);
     return cards;
   } catch (error) {
     console.error('Error getting desk from database', error);

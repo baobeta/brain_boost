@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import Panel from 'primevue/panel';
 import SummaryCard from './SummaryCard.vue';
+
+defineEmits(['learn']);
 </script>
 <template>
   <Panel>
@@ -11,7 +13,7 @@ import SummaryCard from './SummaryCard.vue';
         <SummaryCard class="w-1/3" icon="book" title="Review" :total="0" color="blue" />
       </div>
 
-      <PButton label="Learn" class="mt-2" />
+      <PButton label="Learn" class="mt-2" @click="$emit('learn')" />
     </div>
   </Panel>
 </template>

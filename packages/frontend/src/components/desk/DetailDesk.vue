@@ -56,6 +56,14 @@ async function handleEditCard(id: string) {
   }
   router.push({ name: 'edit_card', params: { cardId: id } });
 }
+
+function redirectToLearnPage() {
+  if (!deskData?.value?.id) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Desk not found', life: 3000 });
+    return;
+  }
+  router.push({ name: 'learn', params: { deskId: deskData.value.id } });
+}
 </script>
 <template>
   <div v-if="deskData">
@@ -65,7 +73,7 @@ async function handleEditCard(id: string) {
           <div class="font-semibold text-xl">{{ deskData.name }}</div>
           <PButton label="Add Cards" outlined severity="contrast" icon="pi pi-plus" @click="handleAddCard" />
         </div>
-        <PanelSummary class="mt-4" />
+        <PanelSummary class="mt-4" @learn="redirectToLearnPage" />
         <div class="flex justify-between items-center mt-6 mb-4">
           <div dir="ltr" data-orientation="horizontal">
             <div class="flex space-x-4">

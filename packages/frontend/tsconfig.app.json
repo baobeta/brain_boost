@@ -16,10 +16,10 @@
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    
-    "baseUrl": ".",
     "paths": {
+      "@vue/runtime-core": ["node_modules/@vue/runtime-core/dist/runtime-core.d.ts"],
       "@/*": ["./src/*"]
-    }
+    },
+    "baseUrl": ".",
   }
 }
