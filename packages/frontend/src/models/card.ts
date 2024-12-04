@@ -1,4 +1,4 @@
-import { createEmptyCard, type Card as Model, type ReviewLog } from 'ts-fsrs';
+import { createEmptyCard, fsrs, type Card, type Card as Model, type ReviewLog } from 'ts-fsrs';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from './db';
 

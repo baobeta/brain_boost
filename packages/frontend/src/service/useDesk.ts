@@ -3,6 +3,7 @@ import type { IDesk } from '@/models/desk';
 import Desk from '@/models/desk';
 import { useObservable } from '@vueuse/rxjs';
 import { liveQuery } from 'dexie';
+import type { ReviewLog } from 'ts-fsrs';
 import { computed, type Ref } from 'vue';
 
 export function useDesk() {
