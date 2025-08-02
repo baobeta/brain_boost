@@ -46,7 +46,7 @@
         type="submit"
         :disabled="!isValid"
         :loading="isLoading"
-        :loading-text="text.loadingText || 'Saving...'"
+        :loading-text="text.loadingText"
         :button-class="styles.submitButton"
       >
         {{ isEditMode ? text.buttons.update : text.buttons.add }}

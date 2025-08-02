@@ -21,6 +21,7 @@ export const CARD_EDITOR_TEXT = {
   errors: {
     saveFailed: 'Failed to save card. Please try again.',
   },
+  loadingText: 'Saving...',
 } as const;
 
 export const CARD_EDITOR_STYLES = {

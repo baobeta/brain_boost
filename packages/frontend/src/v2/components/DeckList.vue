@@ -6,14 +6,14 @@
       <div class="flex space-x-3">
         <button
           class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
-          @click="showImportModal = true"
+          @click="importModal.open()"
         >
           <Upload class="h-4 w-4 mr-2" />
           Import CSV
         </button>
         <button
           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-          @click="showCreateModal = true"
+          @click="createModal.open()"
         >
           <Plus class="h-4 w-4 mr-2" />
           Create Deck
@@ -98,7 +98,7 @@
       <div class="mt-6">
         <button
           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-          @click="showCreateModal = true"
+          @click="createModal.open()"
         >
           <Plus class="h-4 w-4 mr-2" />
           Create Deck
@@ -114,47 +114,85 @@
     </div>
 
     <!-- Create Deck Modal -->
-    <Modal v-if="showCreateModal" @close="showCreateModal = false">
-      <div class="p-6">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Create New Deck</h3>
-        <form @submit.prevent="createDeck">
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"> Deck Name </label>
+    <Modal v-model="createModal.isOpen.value" size="md">
+      <ModalHeader show-close @close="createModal.close()"> Create New Deck </ModalHeader>
+      <form @submit.prevent="createDeck">
+        <ModalBody>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Deck Name</label>
             <input
               v-model="newDeckName"
               type="text"
               required
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter deck name..."
+              @keyup.esc="createModal.close()"
             />
           </div>
-          <div class="flex justify-end space-x-3">
-            <button
-              type="button"
-              class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-              @click="showCreateModal = false"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-            >
-              Create
-            </button>
-          </div>
-        </form>
-      </div>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+            @click="createModal.close()"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            :disabled="!newDeckName.trim()"
+          >
+            Create
+          </button>
+        </ModalFooter>
+      </form>
     </Modal>
 
     <!-- Import CSV Modal -->
-    <Modal v-if="showImportModal" @close="showImportModal = false">
-      <CSVImport @close="showImportModal = false" @imported="loadDecks" />
+    <Modal v-model="importModal.isOpen.value" size="lg">
+      <CSVImport @close="importModal.close()" @imported="handleImported" />
     </Modal>
 
     <!-- Deck Management Modal -->
-    <Modal v-if="selectedDeck && showManageModal" @close="showManageModal = false">
-      <DeckManager :deck="selectedDeck" @close="showManageModal = false" @updated="loadDecks" />
+    <Modal v-model="manageModal.isOpen.value" size="xl">
+      <DeckManager v-if="selectedDeck" :deck="selectedDeck" @close="manageModal.close()" @updated="handleDeckUpdated" />
+    </Modal>
+
+    <!-- Edit Deck Modal -->
+    <Modal v-model="editModal.isOpen.value" size="sm">
+      <ModalHeader show-close @close="editModal.close()"> Edit Deck Name </ModalHeader>
+      <form @submit.prevent="handleEditDeck">
+        <ModalBody>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Deck Name</label>
+            <input
+              v-model="editDeckName"
+              type="text"
+              required
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter deck name..."
+              @keyup.esc="editModal.close()"
+            />
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+            @click="editModal.close()"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            :disabled="!editDeckName.trim() || editDeckName.trim() === editingDeck?.name"
+          >
+            Update
+          </button>
+        </ModalFooter>
+      </form>
     </Modal>
   </div>
 </template>
@@ -162,11 +200,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { Plus, BookOpen, Settings, Edit2, Trash2, Upload, Search } from 'lucide-vue-next';
-import { deckService, cardService } from '../services/database'; // .ts extension is inferred
+import { deckService, cardService } from '../services/database';
+import { useModal } from '../composables/useModal';
 import Modal from './Modal.vue';
+import { ModalHeader, ModalBody, ModalFooter } from './modal';
 import CSVImport from './CSVImport.vue';
 import DeckManager from './DeckManager.vue';
-import type { Deck } from '@/types'; // Import Deck type
+import type { Deck } from '../types';
 
 const emit = defineEmits<{
   (e: 'change-tab', tabId: string): void;
@@ -174,11 +214,18 @@ const emit = defineEmits<{
 
 const decks = ref<Deck[]>([]);
 const searchQuery = ref<string>('');
-const showCreateModal = ref<boolean>(false);
-const showImportModal = ref<boolean>(false);
-const showManageModal = ref<boolean>(false);
 const newDeckName = ref<string>('');
 const selectedDeck = ref<Deck | null>(null);
+
+// Modal management
+const createModal = useModal();
+const importModal = useModal();
+const manageModal = useModal();
+const editModal = useModal();
+
+// Edit deck state
+const editingDeck = ref<Deck | null>(null);
+const editDeckName = ref<string>('');
 
 const filteredDecks = computed<Deck[]>(() => {
   if (!searchQuery.value) return decks.value;
@@ -212,7 +259,7 @@ const createDeck = async (): Promise<void> => {
   try {
     await deckService.create(newDeckName.value.trim());
     newDeckName.value = '';
-    showCreateModal.value = false;
+    createModal.close();
     await loadDecks();
   } catch (error) {
     console.error('Failed to create deck:', error);
@@ -220,10 +267,9 @@ const createDeck = async (): Promise<void> => {
 };
 
 const editDeck = (deck: Deck): void => {
-  const newName = prompt('Enter new deck name:', deck.name);
-  if (newName && newName.trim() !== deck.name) {
-    updateDeckName(deck.id as number, newName.trim());
-  }
+  editingDeck.value = deck;
+  editDeckName.value = deck.name;
+  editModal.open();
 };
 
 const updateDeckName = async (deckId: number, newName: string): Promise<void> => {
@@ -233,6 +279,18 @@ const updateDeckName = async (deckId: number, newName: string): Promise<void> =>
   } catch (error) {
     console.error('Failed to update deck:', error);
   }
+};
+
+const handleEditDeck = async (): Promise<void> => {
+  if (!editingDeck.value || !editDeckName.value.trim()) return;
+
+  if (editDeckName.value.trim() !== editingDeck.value.name) {
+    await updateDeckName(editingDeck.value.id as number, editDeckName.value.trim());
+  }
+
+  editModal.close();
+  editingDeck.value = null;
+  editDeckName.value = '';
 };
 
 const deleteDeck = async (deck: Deck): Promise<void> => {
@@ -254,11 +312,21 @@ const openDeck = (deck: Deck): void => {
 
 const manageDeck = (deck: Deck): void => {
   selectedDeck.value = deck;
-  showManageModal.value = true;
+  manageModal.open();
 };
 
 const formatDate = (date: Date): string => {
   return new Date(date).toLocaleDateString();
+};
+
+const handleImported = async (): Promise<void> => {
+  importModal.close();
+  await loadDecks();
+};
+
+const handleDeckUpdated = async (): Promise<void> => {
+  manageModal.close();
+  await loadDecks();
 };
 
 onMounted(() => {
