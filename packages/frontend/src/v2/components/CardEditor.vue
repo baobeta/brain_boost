@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { cardService } from '../services/database';
-import type { Card } from '@/types';
+import type { Card } from '../types';
 
 const props = defineProps<{
   card?: Card | null;
