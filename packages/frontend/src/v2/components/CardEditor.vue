@@ -5,7 +5,7 @@
     </h3>
 
     <CardForm
-      :form-data="formData"
+      v-model="formData"
       :is-loading="isLoading"
       :error="error"
       :is-valid="isValid"
