@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ModalHeader show-close @close="$emit('close')"> Manage Deck: {{ deck.name }} </ModalHeader>
+    <ModalHeader> Manage Deck: {{ deck.name }} </ModalHeader>
     <ModalBody custom-class="max-h-[60vh] overflow-y-auto">
       <!-- Deck Stats -->
       <div class="grid grid-cols-3 gap-4 mb-6">
@@ -137,9 +137,13 @@
     </ModalBody>
 
     <!-- Add/Edit Card Modal -->
-    <Modal v-model="cardModal.isOpen.value" size="md">
-      <CardEditor :card="editingCard" :deck-id="deck.id as number" @close="closeCardModal" @saved="handleCardSaved" />
-    </Modal>
+    <CardEditorModal
+      v-model="cardModal.isOpen.value"
+      :card="editingCard"
+      :deck-id="deck.id as number"
+      @saved="handleCardSaved"
+      @close="closeCardModal"
+    />
   </div>
 </template>
 
@@ -148,9 +152,8 @@ import { ref, computed, onMounted } from 'vue';
 import { Plus, Trash2, Search, Edit2 } from 'lucide-vue-next';
 import { cardService } from '../services/database';
 import { useModal } from '../composables/useModal';
-import Modal from './Modal.vue';
 import { ModalHeader, ModalBody } from './modal';
-import CardEditor from './CardEditor.vue';
+import { CardEditorModal } from './modals';
 import type { Deck, Card } from '../types';
 
 const props = defineProps<{

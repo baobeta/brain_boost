@@ -1,4 +1,4 @@
-import { ref, readonly } from 'vue';
+import { ref } from 'vue';
 import type { Ref } from 'vue';
 
 export interface UseModalReturn {
@@ -24,7 +24,7 @@ export function useModal(initialState = false): UseModalReturn {
   };
 
   return {
-    isOpen: readonly(isOpen),
+    isOpen,
     open,
     close,
     toggle,

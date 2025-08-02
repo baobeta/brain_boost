@@ -1,8 +1,7 @@
 <template>
   <form :class="styles.form" @submit.prevent="handleSubmit">
-    <!-- Term Field -->
     <FormField
-      v-model="term"
+      v-model="formData.term"
       :label="text.labels.term"
       :placeholder="text.placeholders.term"
       :required="true"
@@ -10,9 +9,8 @@
       :label-class="styles.label"
     />
 
-    <!-- Definition Field -->
     <FormField
-      v-model="definition"
+      v-model="formData.definition"
       type="textarea"
       :label="text.labels.definition"
       :placeholder="text.placeholders.definition"
@@ -22,9 +20,8 @@
       :label-class="styles.label"
     />
 
-    <!-- Example Field -->
     <FormField
-      v-model="example"
+      v-model="formData.example"
       type="textarea"
       :label="text.labels.example"
       :placeholder="text.placeholders.example"
@@ -33,10 +30,8 @@
       :label-class="styles.label"
     />
 
-    <!-- Error Message -->
     <FormError :error="error" />
 
-    <!-- Action Buttons -->
     <FormActions>
       <button type="button" :class="styles.cancelButton" @click="handleCancel">
         {{ text.buttons.cancel }}
@@ -66,19 +61,19 @@ import FormActions from '../form/FormActions.vue';
 import LoadingButton from '../form/LoadingButton.vue';
 
 interface Props {
-  formData: CardFormData;
   isLoading: boolean;
   error: string | null;
   isValid: boolean;
   card?: Card | null;
 }
 
+const formData = defineModel<CardFormData>('modelValue', { required: true });
+
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
   submit: [];
   cancel: [];
-  'update:formData': [value: CardFormData];
 }>();
 
 // Constants
@@ -87,32 +82,8 @@ const styles = CARD_EDITOR_STYLES;
 
 const isEditMode = computed(() => !!props.card);
 
-// Computed properties for form fields to avoid prop mutations
-const term = computed({
-  get: () => props.formData.term,
-  set: (value: string) => {
-    emit('update:formData', { ...props.formData, term: value });
-  },
-});
-
-const definition = computed({
-  get: () => props.formData.definition,
-  set: (value: string) => {
-    emit('update:formData', { ...props.formData, definition: value });
-  },
-});
-
-const example = computed({
-  get: () => props.formData.example,
-  set: (value: string) => {
-    emit('update:formData', { ...props.formData, example: value });
-  },
-});
-
 const handleSubmit = () => {
-  if (props.isValid && !props.isLoading) {
-    emit('submit');
-  }
+  if (props.isValid && !props.isLoading) emit('submit');
 };
 
 const handleCancel = () => {

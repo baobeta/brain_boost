@@ -91,7 +91,7 @@
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="decks.length === 0" class="text-center py-12">
+    <div v-else-if="props.decks.length === 0" class="text-center py-12">
       <BookOpen class="mx-auto h-12 w-12 text-gray-400" />
       <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No decks yet</h3>
       <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating your first deck.</p>
@@ -114,107 +114,39 @@
     </div>
 
     <!-- Create Deck Modal -->
-    <Modal v-model="createModal.isOpen.value" size="md">
-      <ModalHeader show-close @close="createModal.close()"> Create New Deck </ModalHeader>
-      <form @submit.prevent="createDeck">
-        <ModalBody>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Deck Name</label>
-            <input
-              v-model="newDeckName"
-              type="text"
-              required
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter deck name..."
-              @keyup.esc="createModal.close()"
-            />
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <button
-            type="button"
-            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
-            @click="createModal.close()"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            :disabled="!newDeckName.trim()"
-          >
-            Create
-          </button>
-        </ModalFooter>
-      </form>
-    </Modal>
+    <CreateDeckModal v-model="createModal.isOpen.value" @created="handleDeckCreated" />
 
     <!-- Import CSV Modal -->
-    <Modal v-model="importModal.isOpen.value" size="lg">
-      <CSVImport @close="importModal.close()" @imported="handleImported" />
-    </Modal>
+    <ImportCSVModal v-model="importModal.isOpen.value" @imported="handleImported" />
 
     <!-- Deck Management Modal -->
-    <Modal v-model="manageModal.isOpen.value" size="xl">
-      <DeckManager v-if="selectedDeck" :deck="selectedDeck" @close="manageModal.close()" @updated="handleDeckUpdated" />
-    </Modal>
+    <DeckManagerModal v-model="manageModal.isOpen.value" :deck="selectedDeck" @updated="handleManagerUpdated" />
 
     <!-- Edit Deck Modal -->
-    <Modal v-model="editModal.isOpen.value" size="sm">
-      <ModalHeader show-close @close="editModal.close()"> Edit Deck Name </ModalHeader>
-      <form @submit.prevent="handleEditDeck">
-        <ModalBody>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Deck Name</label>
-            <input
-              v-model="editDeckName"
-              type="text"
-              required
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter deck name..."
-              @keyup.esc="editModal.close()"
-            />
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <button
-            type="button"
-            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
-            @click="editModal.close()"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            :disabled="!editDeckName.trim() || editDeckName.trim() === editingDeck?.name"
-          >
-            Update
-          </button>
-        </ModalFooter>
-      </form>
-    </Modal>
+    <EditDeckModal v-model="editModal.isOpen.value" :deck="editingDeck" @updated="handleDeckUpdated" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { Plus, BookOpen, Settings, Edit2, Trash2, Upload, Search } from 'lucide-vue-next';
-import { deckService, cardService } from '../services/database';
 import { useModal } from '../composables/useModal';
-import Modal from './Modal.vue';
-import { ModalHeader, ModalBody, ModalFooter } from './modal';
-import CSVImport from './CSVImport.vue';
-import DeckManager from './DeckManager.vue';
+import { CreateDeckModal, EditDeckModal, ImportCSVModal, DeckManagerModal } from './modals';
 import type { Deck } from '../types';
 
-const emit = defineEmits<{
-  (e: 'change-tab', tabId: string): void;
+const props = defineProps<{
+  decks: Deck[];
 }>();
 
-const decks = ref<Deck[]>([]);
+const emit = defineEmits<{
+  'change-tab': [tabId: string];
+  'load-decks': [];
+  'delete-deck': [deckId: number];
+  'deck-created': [];
+  'deck-updated': [];
+}>();
+
 const searchQuery = ref<string>('');
-const newDeckName = ref<string>('');
 const selectedDeck = ref<Deck | null>(null);
 
 // Modal management
@@ -225,82 +157,22 @@ const editModal = useModal();
 
 // Edit deck state
 const editingDeck = ref<Deck | null>(null);
-const editDeckName = ref<string>('');
 
 const filteredDecks = computed<Deck[]>(() => {
-  if (!searchQuery.value) return decks.value;
+  if (!searchQuery.value) return props.decks;
 
   const query = searchQuery.value.toLowerCase();
-  return decks.value.filter((deck) => deck.name.toLowerCase().includes(query));
+  return props.decks.filter((deck) => deck.name.toLowerCase().includes(query));
 });
-
-const loadDecks = async (): Promise<void> => {
-  try {
-    const deckList: Deck[] = await deckService.getAll();
-
-    // Get card counts and due counts for each deck
-    for (const deck of deckList) {
-      const cards = await cardService.getByDeck(deck.id as number);
-      const dueCards = await cardService.getDueCards(deck.id as number);
-
-      deck.cardCount = cards.length;
-      deck.dueCount = dueCards.length;
-    }
-
-    decks.value = deckList;
-  } catch (error) {
-    console.error('Failed to load decks:', error);
-  }
-};
-
-const createDeck = async (): Promise<void> => {
-  if (!newDeckName.value.trim()) return;
-
-  try {
-    await deckService.create(newDeckName.value.trim());
-    newDeckName.value = '';
-    createModal.close();
-    await loadDecks();
-  } catch (error) {
-    console.error('Failed to create deck:', error);
-  }
-};
 
 const editDeck = (deck: Deck): void => {
   editingDeck.value = deck;
-  editDeckName.value = deck.name;
   editModal.open();
-};
-
-const updateDeckName = async (deckId: number, newName: string): Promise<void> => {
-  try {
-    await deckService.update(deckId, { name: newName });
-    await loadDecks();
-  } catch (error) {
-    console.error('Failed to update deck:', error);
-  }
-};
-
-const handleEditDeck = async (): Promise<void> => {
-  if (!editingDeck.value || !editDeckName.value.trim()) return;
-
-  if (editDeckName.value.trim() !== editingDeck.value.name) {
-    await updateDeckName(editingDeck.value.id as number, editDeckName.value.trim());
-  }
-
-  editModal.close();
-  editingDeck.value = null;
-  editDeckName.value = '';
 };
 
 const deleteDeck = async (deck: Deck): Promise<void> => {
   if (confirm(`Are you sure you want to delete "${deck.name}"? This will also delete all cards in this deck.`)) {
-    try {
-      await deckService.delete(deck.id as number);
-      await loadDecks();
-    } catch (error) {
-      console.error('Failed to delete deck:', error);
-    }
+    emit('delete-deck', deck.id as number);
   }
 };
 
@@ -319,17 +191,29 @@ const formatDate = (date: Date): string => {
   return new Date(date).toLocaleDateString();
 };
 
-const handleImported = async (): Promise<void> => {
+const handleDeckCreated = (): void => {
+  createModal.close();
+  emit('deck-created');
+};
+
+const handleDeckUpdated = (): void => {
+  editModal.close();
+  editingDeck.value = null;
+  emit('deck-updated');
+};
+
+const handleImported = (): void => {
   importModal.close();
-  await loadDecks();
+  emit('deck-created');
 };
 
-const handleDeckUpdated = async (): Promise<void> => {
+const handleManagerUpdated = (): void => {
   manageModal.close();
-  await loadDecks();
+  emit('deck-updated');
 };
 
+// Request initial data load when component mounts
 onMounted(() => {
-  loadDecks();
+  emit('load-decks');
 });
 </script>
