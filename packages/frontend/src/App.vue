@@ -11,16 +11,6 @@
             </div>
 
             <div class="flex items-center space-x-4">
-              <!-- Theme Toggle -->
-              <button
-                class="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                @click="toggleTheme"
-              >
-                <Sun v-if="isDarkMode" class="h-5 w-5" />
-                <Moon v-else class="h-5 w-5" />
-              </button>
-
-              <!-- Navigation -->
               <nav class="flex space-x-4">
                 <button
                   v-for="tab in tabs"
@@ -51,12 +41,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, type Component as VueComponent } from 'vue';
-import { BookOpen, Sun, Moon, Library, Play, BarChart3, Settings } from 'lucide-vue-next';
-import DeckList from './v2/components/DeckList.vue';
+import { ref, computed, type Component as VueComponent } from 'vue';
+import { BookOpen, Library, Play, BarChart3, Settings } from 'lucide-vue-next';
 import ReviewMode from './v2/components/ReviewMode.vue';
 import Dashboard from './v2/components/Dashboard.vue';
 import SettingsView from './v2/components/SettingsView.vue';
+import DecksView from './v2/views/DecksView.vue';
 
 type Tab = {
   id: string;
@@ -69,7 +59,7 @@ const activeTab = ref<string>('decks');
 const isDarkMode = ref<boolean>(false);
 
 const tabs: Tab[] = [
-  { id: 'decks', name: 'Decks', icon: Library, component: DeckList },
+  { id: 'decks', name: 'Decks', icon: Library, component: DecksView },
   { id: 'review', name: 'Review', icon: Play, component: ReviewMode },
   { id: 'dashboard', name: 'Dashboard', icon: BarChart3, component: Dashboard },
   { id: 'settings', name: 'Settings', icon: Settings, component: SettingsView },
@@ -78,29 +68,4 @@ const tabs: Tab[] = [
 const currentComponent = computed<VueComponent | undefined>(() => {
   return tabs.find((tab) => tab.id === activeTab.value)?.component;
 });
-
-const toggleTheme = (): void => {
-  isDarkMode.value = !isDarkMode.value;
-  localStorage.setItem('theme', isDarkMode.value ? 'dark' : 'light');
-};
-
-onMounted(() => {
-  // Load theme preference
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme) {
-    isDarkMode.value = savedTheme === 'dark';
-  } else {
-    isDarkMode.value = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
-});
 </script>
-
-<style>
-#app {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-.dark {
-  color-scheme: dark;
-}
-</style>
