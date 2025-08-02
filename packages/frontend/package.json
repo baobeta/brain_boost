@@ -27,6 +27,8 @@
     "eslint-config-prettier": "^9.1.0",
     "feather-icons": "4",
     "floating-vue": "^5.2.2",
+    "lucide-vue-next": "^0.536.0",
+    "papaparse": "^5.5.3",
     "pinia": "^2.1.7",
     "prettier": "^3.2.5",
     "primevue": "^4.1.1",

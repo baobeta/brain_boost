@@ -6,7 +6,7 @@
   "author": "baobeta <lequocbao29072001@gmail.com>",
   "license": "MIT",
   "private": true,
-  "packageManager": "^yarn@1.22.19",
+  "packageManager": "yarn@1.22.19",
   "workspaces": [
     "apps/*",
     "packages/*"
