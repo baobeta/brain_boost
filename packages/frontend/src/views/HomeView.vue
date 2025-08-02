@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import ButtonIcon from '@/components/core/ButtonIcon.vue';
-import ListDeck from '@/components/homeview/ListDeck.vue';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useDesk } from '@/service/useDesk';
-import { useModal } from '@/service/useModal';
-
-const { listDesks } = useDesk();
-const { useDeskModal } = useModal();
 </script>
 
 <template>
