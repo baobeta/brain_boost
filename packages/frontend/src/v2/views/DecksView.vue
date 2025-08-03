@@ -15,6 +15,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useToast } from '../../composables/useToast';
 import { deckService, cardService } from '../services/database';
 import DeckList from '../components/DeckList.vue';
 import type { Deck } from '../types';
@@ -23,6 +24,7 @@ const emit = defineEmits<{
   'change-tab': [tabId: string];
 }>();
 
+const toast = useToast();
 const decks = ref<Deck[]>([]);
 const isLoading = ref(false);
 
@@ -43,7 +45,7 @@ const loadDecks = async (): Promise<void> => {
     decks.value = deckList;
   } catch (error) {
     console.error('Failed to load decks:', error);
-    // TODO: Show error notification to user
+    toast.error('Error', 'Failed to load decks. Please try again.');
   } finally {
     isLoading.value = false;
   }
@@ -51,22 +53,22 @@ const loadDecks = async (): Promise<void> => {
 
 const handleDeckCreated = async (): Promise<void> => {
   await loadDecks();
-  // TODO: Show success notification
+  toast.success('Success', 'Deck created successfully!', 1000);
 };
 
 const handleDeckUpdated = async (): Promise<void> => {
   await loadDecks();
-  // TODO: Show success notification
+  toast.success('Success', 'Deck updated successfully!');
 };
 
 const handleDeleteDeck = async (deckId: number): Promise<void> => {
   try {
     await deckService.delete(deckId);
     await loadDecks();
-    // TODO: Show success notification
+    toast.success('Success', 'Deck deleted successfully!');
   } catch (error) {
     console.error('Failed to delete deck:', error);
-    // TODO: Show error notification
+    toast.error('Error', 'Failed to delete deck. Please try again.');
   }
 };
 

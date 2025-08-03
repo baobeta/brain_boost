@@ -37,16 +37,21 @@
         <component :is="currentComponent" @change-tab="activeTab = $event" />
       </main>
     </div>
+
+    <!-- Custom Toast Component for notifications -->
+    <Toast />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, type Component as VueComponent } from 'vue';
 import { BookOpen, Library, Play, BarChart3, Settings } from 'lucide-vue-next';
+import Toast from './components/Toast.vue';
 import ReviewMode from './v2/components/ReviewMode.vue';
 import Dashboard from './v2/components/Dashboard.vue';
 import SettingsView from './v2/components/SettingsView.vue';
 import DecksView from './v2/views/DecksView.vue';
+import { useProvideToast } from './composables/useToast';
 
 type Tab = {
   id: string;
@@ -54,6 +59,8 @@ type Tab = {
   icon: VueComponent;
   component: VueComponent;
 };
+
+useProvideToast();
 
 const activeTab = ref<string>('decks');
 const isDarkMode = ref<boolean>(false);

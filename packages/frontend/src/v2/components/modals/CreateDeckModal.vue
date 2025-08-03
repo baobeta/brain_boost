@@ -39,6 +39,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useToast } from '../../../composables/useToast';
 import { deckService } from '../../services/database';
 import Modal from '../Modal.vue';
 import { ModalHeader, ModalBody, ModalFooter } from '../modal';
@@ -53,6 +54,7 @@ const emit = defineEmits<{
   created: [];
 }>();
 
+const toast = useToast();
 const deckName = ref('');
 const isLoading = ref(false);
 
@@ -74,7 +76,7 @@ const handleSubmit = async () => {
     handleClose();
   } catch (error) {
     console.error('Failed to create deck:', error);
-    // TODO: Show error message to user
+    toast.error('Error', 'Failed to create deck. Please try again.');
   } finally {
     isLoading.value = false;
   }
