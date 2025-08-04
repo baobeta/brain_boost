@@ -7,7 +7,7 @@ import VueDevTools from 'vite-plugin-vue-devtools';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), VueDevTools()],
-  base: './',
+  base: process.env.NODE_ENV === 'production' ? '/' : './',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
