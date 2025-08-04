@@ -1,0 +1,11 @@
+{
+  "buildCommand": "yarn build",
+  "outputDirectory": "packages/frontend/dist",
+  "framework": "vite",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}
