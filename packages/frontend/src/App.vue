@@ -45,9 +45,10 @@
 
 <script setup lang="ts">
 import { ref, computed, type Component as VueComponent } from 'vue';
-import { BookOpen, Library, Play, BarChart3, Settings } from 'lucide-vue-next';
+import { BookOpen, Library, Play, BarChart3, Settings, Keyboard } from 'lucide-vue-next';
 import Toast from './components/Toast.vue';
 import ReviewMode from './v2/components/ReviewMode.vue';
+import TypingMode from './v2/components/TypingMode.vue';
 import Dashboard from './v2/components/Dashboard.vue';
 import SettingsView from './v2/components/SettingsView.vue';
 import DecksView from './v2/views/DecksView.vue';
@@ -68,6 +69,7 @@ const isDarkMode = ref<boolean>(false);
 const tabs: Tab[] = [
   { id: 'decks', name: 'Decks', icon: Library, component: DecksView },
   { id: 'review', name: 'Review', icon: Play, component: ReviewMode },
+  { id: 'typing', name: 'Typing', icon: Keyboard, component: TypingMode },
   { id: 'dashboard', name: 'Dashboard', icon: BarChart3, component: Dashboard },
   { id: 'settings', name: 'Settings', icon: Settings, component: SettingsView },
 ];
