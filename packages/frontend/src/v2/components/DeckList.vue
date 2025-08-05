@@ -120,7 +120,12 @@
     <ImportCSVModal v-model="importModal.isOpen.value" @imported="handleImported" />
 
     <!-- Deck Management Modal -->
-    <DeckManagerModal v-model="manageModal.isOpen.value" :deck="selectedDeck" @updated="handleManagerUpdated" />
+    <DeckManagerModal
+      v-model="manageModal.isOpen.value"
+      :deck="selectedDeck"
+      @updated="handleManagerUpdated"
+      @cards-updated="handleCardsUpdated"
+    />
 
     <!-- Edit Deck Modal -->
     <EditDeckModal v-model="editModal.isOpen.value" :deck="editingDeck" @updated="handleDeckUpdated" />
@@ -209,6 +214,13 @@ const handleImported = (): void => {
 
 const handleManagerUpdated = (): void => {
   manageModal.close();
+  emit('deck-updated');
+};
+
+const handleCardsUpdated = (): void => {
+  // Cards were updated, but we don't close the modal
+  // The DeckManager component handles its own state updates
+  // We just need to notify the parent that deck data might have changed
   emit('deck-updated');
 };
 

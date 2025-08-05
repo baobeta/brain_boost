@@ -1,6 +1,12 @@
 <template>
   <Modal v-model="isOpen" size="full" @close="handleClose">
-    <DeckManager v-if="deck" :deck="deck" @close="handleClose" @updated="handleUpdated" />
+    <DeckManager
+      v-if="deck"
+      :deck="deck"
+      @close="handleClose"
+      @updated="handleUpdated"
+      @cards-updated="handleCardsUpdated"
+    />
   </Modal>
 </template>
 
@@ -18,6 +24,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:modelValue': [value: boolean];
   updated: [];
+  'cards-updated': [];
 }>();
 
 const isOpen = computed({
@@ -30,7 +37,12 @@ const handleClose = () => {
 };
 
 const handleUpdated = () => {
+  console.log('🚀 ~ handleUpdated');
   emit('updated');
-  handleClose();
+};
+
+const handleCardsUpdated = () => {
+  console.log('🚀 ~ handleCardsUpdated');
+  emit('cards-updated');
 };
 </script>

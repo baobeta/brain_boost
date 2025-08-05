@@ -9,9 +9,9 @@ export interface CardFormData {
 
 export function useCardForm(initialCard?: Card | null) {
   const formData = ref<CardFormData>({
-    term: '',
-    definition: '',
-    example: '',
+    term: initialCard?.term || '',
+    definition: initialCard?.definition || '',
+    example: initialCard?.example || '',
   });
 
   const isLoading = ref(false);

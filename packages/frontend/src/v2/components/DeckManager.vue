@@ -140,6 +140,7 @@
 
     <!-- Add/Edit Card Modal -->
     <CardEditorModal
+      v-if="cardModal.isOpen.value"
       v-model="cardModal.isOpen.value"
       :card="editingCard"
       :deck-id="deck.id as number"
@@ -165,6 +166,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'close'): void;
   (e: 'updated'): void;
+  (e: 'cards-updated'): void;
 }>();
 
 const cards = ref<Card[]>([]);
@@ -219,7 +221,7 @@ const bulkDelete = async (): Promise<void> => {
       await cardService.bulkDelete(selectedCards.value);
       selectedCards.value = [];
       await loadCards();
-      emit('updated');
+      emit('cards-updated');
     } catch (error) {
       console.error('Failed to delete cards:', error);
     }
@@ -241,7 +243,7 @@ const deleteCard = async (card: Card): Promise<void> => {
     try {
       await cardService.delete(card.id as number);
       await loadCards();
-      emit('updated');
+      emit('cards-updated');
     } catch (error) {
       console.error('Failed to delete card:', error);
     }
@@ -256,7 +258,7 @@ const closeCardModal = (): void => {
 const handleCardSaved = async (): Promise<void> => {
   closeCardModal();
   await loadCards();
-  emit('updated');
+  emit('cards-updated');
 };
 
 const getCardStatus = (card: Card): string => {
