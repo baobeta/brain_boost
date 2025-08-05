@@ -77,11 +77,14 @@
           <!-- Definition and Example (shown after reveal) -->
           <div v-if="showAnswer" class="space-y-6">
             <div class="text-center">
-              <div class="text-lg text-gray-700 dark:text-gray-300 mb-4">
+              <div class="text-lg text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-line">
                 {{ currentCard.definition }}
               </div>
 
-              <div v-if="currentCard.example" class="text-sm text-gray-600 dark:text-gray-400 italic">
+              <div
+                v-if="currentCard.example"
+                class="text-sm text-gray-600 dark:text-gray-400 italic whitespace-pre-line"
+              >
                 "{{ currentCard.example }}"
               </div>
             </div>
