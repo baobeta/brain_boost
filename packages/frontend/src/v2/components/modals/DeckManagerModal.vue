@@ -1,5 +1,5 @@
 <template>
-  <Modal v-model="isOpen" size="xl" @close="handleClose">
+  <Modal v-model="isOpen" size="full" @close="handleClose">
     <DeckManager v-if="deck" :deck="deck" @close="handleClose" @updated="handleUpdated" />
   </Modal>
 </template>

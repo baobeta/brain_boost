@@ -1,7 +1,7 @@
 <template>
   <div>
     <ModalHeader> Manage Deck: {{ deck.name }} </ModalHeader>
-    <ModalBody custom-class="max-h-[60vh] overflow-y-auto">
+    <ModalBody custom-class="max-h-[80vh] overflow-y-auto">
       <!-- Deck Stats -->
       <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
@@ -55,7 +55,7 @@
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
           <thead class="bg-gray-50 dark:bg-gray-700">
             <tr>
-              <th class="px-3 py-3 text-left">
+              <th class="px-3 py-3 text-left w-12">
                 <input
                   type="checkbox"
                   :checked="allSelected"
@@ -64,27 +64,27 @@
                 />
               </th>
               <th
-                class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-1/5"
               >
                 Term
               </th>
               <th
-                class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-2/5"
               >
                 Definition
               </th>
               <th
-                class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-20"
               >
                 Status
               </th>
               <th
-                class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-24"
               >
                 Next Review
               </th>
               <th
-                class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-20"
               >
                 Actions
               </th>
@@ -92,7 +92,7 @@
           </thead>
           <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600">
             <tr v-for="card in filteredCards" :key="card.id">
-              <td class="px-3 py-4">
+              <td class="px-3 py-4 w-12">
                 <input
                   v-model="selectedCards"
                   type="checkbox"
@@ -100,21 +100,23 @@
                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
               </td>
-              <td class="px-3 py-4 text-sm font-medium text-gray-900 dark:text-white">
+              <td class="px-3 py-4 text-sm font-medium text-gray-900 dark:text-white w-1/5">
                 {{ card.term }}
               </td>
-              <td class="px-3 py-4 text-sm text-gray-600 dark:text-gray-400 max-w-xs truncate">
-                {{ card.definition }}
+              <td class="px-3 py-4 text-sm text-gray-600 dark:text-gray-400 w-2/5 max-w-md">
+                <div class="truncate" :title="card.definition">
+                  {{ card.definition }}
+                </div>
               </td>
-              <td class="px-3 py-4 text-sm">
+              <td class="px-3 py-4 text-sm w-20">
                 <span :class="getStatusClass(card)">
                   {{ getCardStatus(card) }}
                 </span>
               </td>
-              <td class="px-3 py-4 text-sm text-gray-600 dark:text-gray-400">
+              <td class="px-3 py-4 text-sm text-gray-600 dark:text-gray-400 w-24">
                 {{ formatNextReview(card.nextReviewDate) }}
               </td>
-              <td class="px-3 py-4 text-sm">
+              <td class="px-3 py-4 text-sm w-20">
                 <div class="flex space-x-2">
                   <button
                     class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
