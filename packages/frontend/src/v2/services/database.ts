@@ -93,8 +93,25 @@ export const cardService = {
   },
 
   async getDueCards(deckId: number | null = null): Promise<Card[]> {
+    // Get cards that are due (nextReviewDate <= now)
     const now = new Date();
     const query = db.cards.where('nextReviewDate').belowOrEqual(now);
+
+    if (deckId !== null) {
+      const cards = await query.toArray();
+      return cards.filter((card) => card.deckId === deckId);
+    }
+
+    return await query.toArray();
+  },
+
+  async getCardsDueToday(deckId: number | null = null): Promise<Card[]> {
+    // Get cards due today specifically (not overdue)
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+
+    const query = db.cards.where('nextReviewDate').between(startOfDay, endOfDay, true, true);
 
     if (deckId !== null) {
       const cards = await query.toArray();
