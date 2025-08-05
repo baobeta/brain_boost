@@ -51,6 +51,34 @@
         ></div>
       </div>
 
+      <!-- Study Mode Toggle -->
+      <div class="flex justify-center">
+        <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+          <button
+            :class="[
+              'px-4 py-2 rounded-md text-sm font-medium transition-colors',
+              !isReverseMode
+                ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white',
+            ]"
+            @click="isReverseMode = false"
+          >
+            Normal
+          </button>
+          <button
+            :class="[
+              'px-4 py-2 rounded-md text-sm font-medium transition-colors',
+              isReverseMode
+                ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white',
+            ]"
+            @click="isReverseMode = true"
+          >
+            Reverse
+          </button>
+        </div>
+      </div>
+
       <!-- Flashcard -->
       <div
         class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 min-h-[400px] flex flex-col"
@@ -63,26 +91,32 @@
           <div v-if="isPracticeMode" class="text-sm text-blue-600 dark:text-blue-400 mt-1">
             Practice Mode - Reviewing all cards
           </div>
+          <div v-if="isReverseMode" class="text-sm text-purple-600 dark:text-purple-400 mt-1">
+            Reverse Mode - Guess the term from definition
+          </div>
         </div>
 
         <!-- Card Content -->
         <div class="flex-1 p-8 flex flex-col justify-center">
-          <!-- Term (always visible) -->
+          <!-- Question (Term in Normal Mode, Definition in Reverse Mode) -->
           <div class="text-center mb-8">
             <div class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              {{ currentCard.term }}
+              {{ isReverseMode ? currentCard.definition : currentCard.term }}
+            </div>
+            <div v-if="isReverseMode && currentCard.example" class="text-lg text-gray-600 dark:text-gray-400 mt-4">
+              {{ currentCard.example }}
             </div>
           </div>
 
-          <!-- Definition and Example (shown after reveal) -->
+          <!-- Answer and Rating (shown after reveal) -->
           <div v-if="showAnswer" class="space-y-6">
             <div class="text-center">
               <div class="text-lg text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-line">
-                {{ currentCard.definition }}
+                {{ isReverseMode ? currentCard.term : currentCard.definition }}
               </div>
 
               <div
-                v-if="currentCard.example"
+                v-if="!isReverseMode && currentCard.example"
                 class="text-sm text-gray-600 dark:text-gray-400 italic whitespace-pre-line"
               >
                 "{{ currentCard.example }}"
@@ -198,6 +232,7 @@ const showAnswer = ref<boolean>(false);
 const reviewedCount = ref<number>(0);
 const sessionStats = ref<SessionStats>({ correct: 0, incorrect: 0 });
 const sessionComplete = ref<boolean>(false);
+const isReverseMode = ref<boolean>(false);
 
 const ratings: Rating[] = [
   { value: 0, label: 'Again', class: 'bg-red-500 hover:bg-red-600 text-white' },
