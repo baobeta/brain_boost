@@ -40,7 +40,12 @@
           Back to Decks
         </button>
 
-        <div class="text-sm text-gray-600 dark:text-gray-400">{{ reviewedCount }} / {{ totalCards }} cards</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          {{ reviewedCount }} / {{ totalCards }} cards
+          <span v-if="totalCards > initialSessionSize" class="text-blue-600 dark:text-blue-400">
+            (+{{ totalCards - initialSessionSize }} new)
+          </span>
+        </div>
       </div>
 
       <!-- Progress Bar -->
@@ -156,7 +161,10 @@
         {{ isPracticeMode ? 'Practice Session Complete!' : 'Review Complete!' }}
       </h2>
       <p class="text-gray-600 dark:text-gray-400 mb-8">
-        You've reviewed all {{ reviewedCount }} cards in this {{ isPracticeMode ? 'practice session' : 'session' }}.
+        You've reviewed all {{ totalCards }} cards in this {{ isPracticeMode ? 'practice session' : 'session' }}.
+        <span v-if="totalCards > initialSessionSize" class="block text-sm text-blue-600 dark:text-blue-400 mt-1">
+          {{ totalCards - initialSessionSize }} new cards were added during the session!
+        </span>
       </p>
 
       <!-- Session Stats -->
@@ -233,6 +241,7 @@ const reviewedCount = ref<number>(0);
 const sessionStats = ref<SessionStats>({ correct: 0, incorrect: 0 });
 const sessionComplete = ref<boolean>(false);
 const isReverseMode = ref<boolean>(false);
+const initialSessionSize = ref<number>(0);
 
 const ratings: Rating[] = [
   { value: 0, label: 'Again', class: 'bg-red-500 hover:bg-red-600 text-white' },
@@ -247,6 +256,14 @@ const currentCard = computed<Card | null>(() => {
 
 const totalCards = computed<number>(() => {
   return dueCards.value.length;
+});
+
+const sessionProgress = computed<{ current: number; total: number; initial: number }>(() => {
+  return {
+    current: reviewedCount.value,
+    total: dueCards.value.length,
+    initial: initialSessionSize.value,
+  };
 });
 
 const decksWithDue = computed<Deck[]>(() => {
@@ -296,6 +313,7 @@ const selectDeck = async (deck: Deck): Promise<void> => {
     reviewedCount.value = 0;
     sessionStats.value = { correct: 0, incorrect: 0 };
     sessionComplete.value = false;
+    initialSessionSize.value = dueCards.value.length;
   } catch (error) {
     console.error('Failed to load due cards:', error);
   }
@@ -364,31 +382,31 @@ const rateCard = async (quality: number): Promise<void> => {
     currentCardIndex.value++;
     showAnswer.value = false;
 
-    // Refresh due cards to include newly due cards
-    if (selectedDeck.value && !isPracticeMode.value) {
-      const refreshedDueCards = await cardService.getDueCards(selectedDeck.value.id as number);
+    // // Refresh due cards to include newly due cards
+    // if (selectedDeck.value && !isPracticeMode.value) {
+    //   const refreshedDueCards = await cardService.getDueCards(selectedDeck.value.id as number);
 
-      // Filter out cards we've already reviewed in this session
-      const reviewedCardIds = new Set();
-      for (let i = 0; i < currentCardIndex.value; i++) {
-        if (dueCards.value[i]) {
-          reviewedCardIds.add(dueCards.value[i].id);
-        }
-      }
+    //   // Filter out cards we've already reviewed in this session
+    //   const reviewedCardIds = new Set();
+    //   for (let i = 0; i < currentCardIndex.value; i++) {
+    //     if (dueCards.value[i]) {
+    //       reviewedCardIds.add(dueCards.value[i].id);
+    //     }
+    //   }
 
-      // Add newly due cards that we haven't reviewed yet
-      const newDueCards = refreshedDueCards.filter((card) => !reviewedCardIds.has(card.id));
-      dueCards.value.push(...newDueCards);
+    //   // Add newly due cards that we haven't reviewed yet
+    //   const newDueCards = refreshedDueCards.filter((card) => !reviewedCardIds.has(card.id));
+    //   dueCards.value.push(...newDueCards);
 
-      // Shuffle the newly added cards for variety
-      if (newDueCards.length > 0) {
-        const currentLength = dueCards.value.length;
-        const newCardsStartIndex = currentLength - newDueCards.length;
-        const newCards = dueCards.value.slice(newCardsStartIndex);
-        const shuffledNewCards = newCards.sort(() => Math.random() - 0.5);
-        dueCards.value.splice(newCardsStartIndex, newCards.length, ...shuffledNewCards);
-      }
-    }
+    //   // Shuffle the newly added cards for variety
+    //   if (newDueCards.length > 0) {
+    //     const currentLength = dueCards.value.length;
+    //     const newCardsStartIndex = currentLength - newDueCards.length;
+    //     const newCards = dueCards.value.slice(newCardsStartIndex);
+    //     const shuffledNewCards = newCards.sort(() => Math.random() - 0.5);
+    //     dueCards.value.splice(newCardsStartIndex, newCards.length, ...shuffledNewCards);
+    //   }
+    // }
 
     // Check if session is complete
     if (currentCardIndex.value >= dueCards.value.length) {
@@ -437,6 +455,7 @@ const selectDeckForPractice = async (deck: Deck): Promise<void> => {
     reviewedCount.value = 0;
     sessionStats.value = { correct: 0, incorrect: 0 };
     sessionComplete.value = false;
+    initialSessionSize.value = dueCards.value.length;
   } catch (error) {
     console.error('Failed to load cards for practice:', error);
   }
@@ -450,6 +469,7 @@ const exitReview = (): void => {
   reviewedCount.value = 0;
   sessionStats.value = { correct: 0, incorrect: 0 };
   sessionComplete.value = false;
+  initialSessionSize.value = 0;
 };
 
 onMounted(() => {
