@@ -28,6 +28,69 @@
       </div>
     </div>
 
+    <!-- Card Count Selection -->
+    <div v-else-if="selectedDeck && !sessionStarted" class="text-center py-12">
+      <div class="max-w-md mx-auto">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          How many cards would you like to practice?
+        </h2>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">
+          {{ selectedDeck.name }} has {{ selectedDeck.cardCount }} cards available
+        </p>
+
+        <!-- Card Count Options -->
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          <button
+            v-for="option in cardCountOptions"
+            :key="option.value"
+            :class="[
+              'p-4 border rounded-lg text-center transition-colors',
+              selectedCardCount === option.value
+                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
+                : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300',
+            ]"
+            @click="selectedCardCount = option.value"
+          >
+            <div class="text-lg font-semibold">{{ option.value }}</div>
+            <div class="text-sm">{{ option.label }}</div>
+          </button>
+        </div>
+
+        <!-- Custom Count Input -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Or enter a custom number:
+          </label>
+          <input
+            v-model.number="customCardCount"
+            type="number"
+            min="1"
+            :max="selectedDeck.cardCount"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            placeholder="Enter number of cards"
+          />
+          <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Maximum: {{ selectedDeck.cardCount }} cards</div>
+        </div>
+
+        <!-- Start Session Button -->
+        <div class="flex justify-center space-x-4">
+          <button
+            class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            :disabled="!canStartSession"
+            @click="startSession"
+          >
+            Start Session
+          </button>
+          <button
+            class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+            @click="exitTypingMode"
+          >
+            Back
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Typing Session -->
     <div v-else-if="currentCard && !sessionComplete" class="space-y-6">
       <!-- Progress -->
@@ -236,6 +299,26 @@ const decksWithCards = computed<Deck[]>(() => {
   return decks.value.filter((deck) => (deck.cardCount || 0) > 0);
 });
 
+const cardCountOptions = ref([
+  { value: 10, label: '10 Cards' },
+  { value: 20, label: '20 Cards' },
+  { value: 30, label: '30 Cards' },
+  { value: 40, label: '40 Cards' },
+  { value: 50, label: '50 Cards' },
+]);
+const selectedCardCount = ref<number>(10);
+const customCardCount = ref<number | null>(null);
+const sessionStarted = ref<boolean>(false);
+
+const canStartSession = computed<boolean>(() => {
+  if (!selectedDeck.value?.cardCount) return false;
+
+  if (customCardCount.value !== null) {
+    return customCardCount.value > 0 && customCardCount.value <= selectedDeck.value.cardCount;
+  }
+  return selectedCardCount.value > 0 && selectedCardCount.value <= selectedDeck.value.cardCount;
+});
+
 const loadDecks = async (): Promise<void> => {
   try {
     const deckList: Deck[] = await deckService.getAll();
@@ -253,26 +336,37 @@ const loadDecks = async (): Promise<void> => {
 };
 
 const selectDeck = async (deck: Deck): Promise<void> => {
-  try {
-    selectedDeck.value = deck;
-    cards.value = await cardService.getByDeck(deck.id as number);
+  selectedDeck.value = deck;
+  // Reset card count selection when a new deck is selected
+  selectedCardCount.value = 10;
+  customCardCount.value = null;
+  sessionStarted.value = false;
+};
 
-    // Shuffle cards for variety
-    cards.value = cards.value.sort(() => Math.random() - 0.5);
+const startSession = async (): Promise<void> => {
+  if (!selectedDeck.value || !selectedDeck.value.cardCount) return;
 
-    currentCardIndex.value = 0;
-    userAnswer.value = '';
-    feedback.value = null;
-    reviewedCount.value = 0;
-    sessionStats.value = { correct: 0, incorrect: 0 };
-    sessionComplete.value = false;
-
-    // Focus input after component updates
-    await nextTick();
-    typingInput.value?.focus();
-  } catch (error) {
-    console.error('Failed to load cards:', error);
+  const cardCount = customCardCount.value !== null ? customCardCount.value : selectedCardCount.value;
+  if (cardCount === null || cardCount <= 0 || cardCount > selectedDeck.value.cardCount) {
+    alert('Please select a valid number of cards to practice.');
+    return;
   }
+
+  cards.value = await cardService.getByDeck(selectedDeck.value.id as number);
+  cards.value = cards.value.sort(() => Math.random() - 0.5);
+  cards.value = cards.value.slice(0, cardCount);
+
+  currentCardIndex.value = 0;
+  userAnswer.value = '';
+  feedback.value = null;
+  reviewedCount.value = 0;
+  sessionStats.value = { correct: 0, incorrect: 0 };
+  sessionComplete.value = false;
+  sessionStarted.value = true;
+
+  // Focus input after component updates
+  await nextTick();
+  typingInput.value?.focus();
 };
 
 const normalizeAnswer = (answer: string): string => {
@@ -339,7 +433,9 @@ const nextCard = async (): Promise<void> => {
 
 const startNewSession = async (): Promise<void> => {
   if (selectedDeck.value) {
-    await selectDeck(selectedDeck.value);
+    sessionStarted.value = false;
+    selectedCardCount.value = 10;
+    customCardCount.value = null;
   }
 };
 
@@ -352,6 +448,7 @@ const exitTypingMode = (): void => {
   reviewedCount.value = 0;
   sessionStats.value = { correct: 0, incorrect: 0 };
   sessionComplete.value = false;
+  sessionStarted.value = false;
 };
 
 onMounted(() => {
