@@ -7,7 +7,7 @@
           <div class="flex justify-between items-center h-16">
             <div class="flex items-center">
               <BookOpen class="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              <h1 class="ml-3 text-xl font-semibold text-gray-900 dark:text-white">Vocabulary Study</h1>
+              <h1 class="ml-3 text-xl font-semibold text-gray-900 dark:text-white">Brains Boost</h1>
             </div>
 
             <div class="flex items-center space-x-4">
@@ -53,6 +53,7 @@ import Dashboard from './v2/components/Dashboard.vue';
 import SettingsView from './v2/components/SettingsView.vue';
 import DecksView from './v2/views/DecksView.vue';
 import { useProvideToast } from './composables/useToast';
+import { useTitle } from '@vueuse/core';
 
 type Tab = {
   id: string;
@@ -62,6 +63,8 @@ type Tab = {
 };
 
 useProvideToast();
+
+useTitle('Brains Boost');
 
 const activeTab = ref<string>('decks');
 const isDarkMode = ref<boolean>(false);
